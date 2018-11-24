@@ -1,0 +1,20 @@
+@import '../mixins/scaleLinearlyBase.styl';
+
+$lengths-mockup-viewport-min = 320px;
+$lengths-mockup-viewport-max = 1440px;
+
+scale(property, lengthAtViewportSm, lengthAtViewportLg, capMaximum=true, useImportant=false) {
+  scaleLinearlyBase(
+    property,
+    lengthAtViewportSm,
+    lengthAtViewportLg,
+    capMaximum,
+    useImportant,
+    $lengths-mockup-viewport-min,
+    $lengths-mockup-viewport-max,
+  );
+}
+
+h1 {
+  scale(font-size, 10px, 60px);
+}

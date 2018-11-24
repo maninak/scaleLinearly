@@ -1,0 +1,84 @@
+/**
+ * Given a length value as seen in a mockup with a mobile-sized viewport
+ *  and another length value seen in a wider mockup version, this mixin maps
+ *  them into algebraic points and solves the linear interpolation,
+ *  returning a calc function representing that solution. By default
+ *  it will also automatically add an upper boundary to the length
+ *  (with a breakpoint at the large viewport size provided).
+ *
+ * Example:
+ *
+ * The mobile and desktop mockups we receive, show an element as having
+ *  a margin-bottom: 20px for smallest mobile and 50px for largest desktop.
+ *  Instead of applying loads of breakpoints (jerking around the rendered
+ *  results as viewport resizes and flooding our code with boilerplate),
+ *  we can just use this mixin as follows:
+ *
+ *  .some-class {
+ *    scaleLinearlyBase(margin-bottom, 20px, 50px, true, false, 320px, 1440px);
+ *  }
+ *
+ *  // Stylus then generates the following
+ *
+ *  .some-class {
+ *    margin-bottom: calc(11.43px + 2.6786vw);
+ *
+ *    @media screen and (min-width: 1440px) {
+ *      & {
+ *        margin-bottom: 50px;
+ *      }
+ *    }
+ *  }
+ *
+ * "Overloading":
+ *
+ * This function is named with the `Base` suffix since it is meant to
+ *  be wrapped by another function with context-specifix defaults, like so:
+ *
+ *  $lengths-mockup-viewport-min = 320px;
+ *  $lengths-mockup-viewport-max = 1440px;
+ *
+ *  scale(property, lengthAtViewportSm, lengthAtViewportLg, capMaximum=true, useImportant=false) {
+ *    scaleLinearlyBase(
+ *      property,
+ *      lengthAtViewportSm,
+ *      lengthAtViewportLg,
+ *      capMaximum,
+ *      useImportant,
+ *      $lengths-mockup-viewport-min,
+ *      $lengths-mockup-viewport-max,
+ *    );
+ *  }
+ *
+ *  Then all you have to do at css level is the following:
+ *
+ *  .some-class {
+ *    scale(margin-bottom, 20px, 50px);
+ *  }
+ */
+scaleLinearlyBase(
+  property,
+  lengthAtViewportSm,
+  lengthAtViewportLg,
+  capMaximum,
+  useImportant,
+  viewportSm,
+  viewportLg,
+) {
+  important = (useImportant) ? '!important' : '';
+
+  slope = (lengthAtViewportLg - lengthAtViewportSm) / (viewportLg - viewportSm);
+
+  vwCoefficient = slope * 100;
+  pxCoefficient = lengthAtViewportSm - (viewportSm * slope);
+
+  {property}: s('calc(%dvw + %dpx) %s', round(vwCoefficient, 4), round(pxCoefficient, 2), unquote(important));
+
+  if (capMaximum) {
+    @media screen and (min-width: viewportLg) {
+      & {
+        {property}: lengthAtViewportLg unquote(important);
+      }
+    }
+  }
+}
