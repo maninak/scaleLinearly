@@ -38,15 +38,51 @@ section.hero {
 }
 
 @media (min-width: 425px) {
+  section.hero {
+    height: 240px;
+  }
 
+  .hero__subtitle {
+    padding-top: 44px;
+    font-size: 15px;
+  }
+
+  .hero__title {
+    margin-top: 4px;
+    font-size: 30px;
+  }
 }
 
 @media (min-width: 768px) {
+  section.hero {
+    height: 300px;
+  }
 
+  .hero__subtitle {
+    padding-top: 60px;
+    font-size: 16px;
+  }
+
+  .hero__title {
+    margin-top: 4px;
+    font-size: 34px;
+  }
 }
 
 @media (min-width: 1024px) {
+  section.hero {
+    height: 420px;
+  }
 
+  .hero__subtitle {
+    padding-top: 90px;
+    font-size: 18px;
+  }
+
+  .hero__title {
+    margin-top: 5px;
+    font-size: 40px;
+  }
 }
 
 @media (min-width: 1440px) {
